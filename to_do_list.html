@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>ToDo List</h1>
+    <div id="container">
+        <!--入力を受ける窓-->
+        <input type="text" id="text-input" placeholder="ToDoを入力してください">
+        <ul id="todo-list">
+        </ul>
+    </div>
+
+    <script>
+
+        //　DOM受け取る
+        const textInput = document.getElementById('text-input');
+        const todoList  = document.getElementById('todo-list');
+
+
+        //　Enterを押されたらイベント発生
+        textInput.addEventListener('keydown', e => {
+            
+            const text = textInput.value.trim();
+
+            if (text === '' || e.key !== 'Enter'){
+                return;
+            } 
+
+            console.log("ちゃんと入力された");
+            
+            // ToDo一つのli、span、buttonタグを作る 
+            const li = document.createElement('li');
+            li.classList.add('list-item');
+
+            const span = document.createElement('span');
+            span.classList.add('todo-text');
+            span.textContent = text;
+            li.appendChild(span);
+
+            const button = document.createElement('button');
+            button.type = ('button');
+            button.classList.add('delete-button');
+            button.textContent = ('削除');
+            button.addEventListener('click', e => {
+                todoList.removeChild(e.target.closest('li'));
+            });
+
+            li.appendChild(button);
+
+            //　DOM表示する
+            todoList.appendChild(li);
+
+            // 入力欄を空にする
+            textInput.value = '';
+
+        });
+
+    </script>
+</body>
+</html>
