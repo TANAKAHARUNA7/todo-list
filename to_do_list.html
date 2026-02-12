@@ -7,26 +7,42 @@
 </head>
 <body>
     <h1>ToDo List</h1>
-    <div id="container">
+
+    <!--入力エリア-->
+    <div class="input-area">
         <!--入力を受ける窓-->
         <input type="text" id="text-input" placeholder="ToDoを入力してください">
-        <ul id="todo-list">
-        </ul>
+        <button type="button" id="add-btn">追加</button>
     </div>
+
+    <!-- フィルターボタン -->
+    <div class="filter-area">
+        <button class="filter-btn active" data-filter="all">全体</button>
+        <button class="filter-btn" data-filter="active">進行中</button>
+        <button class="filter-btn" data-filter="completed">完了</button>
+    </div>
+
+    <!-- ToDo一覧 -->
+    <ul id="todo-list"></ul>
+
+    <!-- 統計 -->
+     <div class="stats" id="status"></div>
+
 
     <script>
 
         //　DOM受け取る
         const textInput = document.getElementById('text-input');
         const todoList  = document.getElementById('todo-list');
+        const addBtn    = document.getElementById("add-btn");
+        const filterBtns = document.querySelectorAll(".filter-btn");
+        const statusEl   = document.getElementById("status");
 
+        function todoAdd(){
 
-        //　Enterを押されたらイベント発生
-        textInput.addEventListener('keydown', e => {
-            
             const text = textInput.value.trim();
 
-            if (text === '' || e.key !== 'Enter'){
+            if (text === ''){
                 return;
             } 
 
@@ -35,6 +51,11 @@
             // ToDo一つのli、span、buttonタグを作る 
             const li = document.createElement('li');
             li.classList.add('list-item');
+
+            // 完了チェック（状態をもたせる）
+            const checkbox = document.createElement('input');
+            checkbox.type  = 'checkbox';
+            checkbox.classList.add('todo-check');
 
             const span = document.createElement('span');
             span.classList.add('todo-text');
@@ -45,20 +66,22 @@
             button.type = ('button');
             button.classList.add('delete-button');
             button.textContent = ('削除');
-            button.addEventListener('click', e => {
-                todoList.removeChild(e.target.closest('li'));
-            });
-
             li.appendChild(button);
 
             //　DOM表示する
             todoList.appendChild(li);
 
+            // ToDo削除
+            button.addEventListener('click', e => {
+                todoList.removeChild(e.target.closest('li'));
+            });
+
             // 入力欄を空にする
             textInput.value = '';
+        };
 
-        });
-
+        //　追加ボタン押されたらイベント発生
+        addBtn.addEventListener('click', todoAdd);
     </script>
 </body>
 </html>
