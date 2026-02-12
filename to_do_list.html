@@ -17,13 +17,19 @@
 
     <!-- フィルターボタン -->
     <div class="filter-area">
-        <button class="filter-btn active" data-filter="all">全体</button>
+        <button class="filter-btn" data-filter="all">全体</button>
         <button class="filter-btn" data-filter="active">進行中</button>
         <button class="filter-btn" data-filter="completed">完了</button>
     </div>
 
     <!-- ToDo一覧 -->
-    <ul id="todo-list"></ul>
+    <ul id="todo-list">
+        <li class="list-item completed">
+            <input type="checkbox" name="" id="">
+            <span class="todo-text"> やること</span>
+            <button type="button" class="delete-button">delete</button>
+        </li>
+    </ul>
 
     <!-- 統計 -->
      <div class="stats" id="status"></div>
@@ -34,9 +40,9 @@
         //　DOM受け取る
         const textInput = document.getElementById('text-input');
         const todoList  = document.getElementById('todo-list');
-        const addBtn    = document.getElementById("add-btn");
-        const filterBtns = document.querySelectorAll(".filter-btn");
-        const statusEl   = document.getElementById("status");
+        const addBtn    = document.getElementById('add-btn');
+        const filterArea = document.querySelector('.filter-area');
+        let currentFilter = 'all'; // 今どのフィfilterルターか
 
         function todoAdd(){
 
@@ -45,23 +51,29 @@
             if (text === ''){
                 return;
             } 
-
-            console.log("ちゃんと入力された");
             
             // ToDo一つのli、span、buttonタグを作る 
             const li = document.createElement('li');
             li.classList.add('list-item');
-
+             
             // 完了チェック（状態をもたせる）
             const checkbox = document.createElement('input');
             checkbox.type  = 'checkbox';
             checkbox.classList.add('todo-check');
+            li.appendChild(checkbox);
+            checkbox.addEventListener('change', () => {
 
+                li.classList.toggle('completed');
+
+            });
+            
+            // span
             const span = document.createElement('span');
             span.classList.add('todo-text');
             span.textContent = text;
             li.appendChild(span);
 
+            // button
             const button = document.createElement('button');
             button.type = ('button');
             button.classList.add('delete-button');
@@ -80,8 +92,41 @@
             textInput.value = '';
         };
 
+        // 選ばれたフィルターを特定して、反映させる処理
+        filterArea.addEventListener('click', function(e) {
+
+            if(!e.target.classList.contains('filter-btn')) return;
+
+            currentFilter = e.target.dataset.filter;
+            applyFilter();
+        });
+
+        // 今選ばれているフィルターに合わせて、ToDo を「見せる or 隠す」関数
+        function applyFilter() {
+            
+            // li(ToDo)を全部取得
+            const items = todoList.querySelectorAll('.list-item');
+
+            // ToDoを1つずつ見る
+            items.forEach(li => {
+
+                // そのToDoは終わってるか？
+                const isCompleted = li.classList.contains('completed');
+     
+                // displayを切り替える
+                if (currentFilter === 'all') {
+                    li.style.display = "";
+                } else if (currentFilter === 'active') {
+                    li.style.display = isCompleted ? "none" : "";
+                } else if (currentFilter === 'completed') {
+                    li.style.display = isCompleted ? "" : "none";
+                }
+            });
+        }
+
         //　追加ボタン押されたらイベント発生
         addBtn.addEventListener('click', todoAdd);
+        
     </script>
 </body>
 </html>
